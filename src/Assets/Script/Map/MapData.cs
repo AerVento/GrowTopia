@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using GrowTopia.Items;
+using GrowTopia.Serialization;
+using Newtonsoft.Json;
 using UnityEngine;
 
-namespace GrowTopia.Map{
+namespace GrowTopia.Map
+{
     [System.Serializable]
+    [JsonObject(MemberSerialization.Fields)]
+
     public class MapData
     {
         /// <summary>
@@ -21,20 +27,24 @@ namespace GrowTopia.Map{
         /// </summary>
         public Vector2Int SpawnPoint;
 
-        public List<GridInfo> Grids;
+        public Dictionary<Vector2Int,GridInfo> Grids;
 
 
-        public static string Serialize(MapData data){
-            return JsonUtility.ToJson(data);
+        public static string Serialize(MapData data)
+        {
+            return JsonConvert.SerializeObject(data, new MapSerializationSettings());
         }
 
-        public static MapData Deserialize(string content){
-            return JsonUtility.FromJson<MapData>(content);
+        public static MapData Deserialize(string content)
+        {
+            return JsonConvert.DeserializeObject<MapData>(content, new MapSerializationSettings());
         }
     }
 
     [System.Serializable]
-    public class GridInfo{
+    [JsonObject(MemberSerialization.Fields)]
+    public class GridInfo
+    {
         /// <summary>
         /// The position of the grid.
         /// </summary>
@@ -44,12 +54,33 @@ namespace GrowTopia.Map{
         /// The id of the block.
         /// </summary>
         public string BlockId;
-        
+
         /// <summary>
         /// For variant block types, there may have some status which was saved on Server. 
         /// Client needs these content to recover to the correct status.
         /// </summary>
         public string ExtraContent;
+
+
+        public IReadOnlyBlock Block
+        {
+            get
+            {
+                IReadOnlyItem item = ItemLoaderManager.Instance.Items.GetValueOrDefault(BlockId);
+                if (item == null)
+                {
+                    Debug.LogError("Unknown block id:" + BlockId);
+                    return null;
+                }
+                IReadOnlyBlock block = item as IReadOnlyBlock;
+                if (block == null)
+                {
+                    Debug.LogError($"Id:{BlockId} is not a block but an item.");
+                    return null;
+                }
+                return block;
+            }
+        }
     }
 }
 

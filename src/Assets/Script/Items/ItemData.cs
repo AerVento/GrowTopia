@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrowTopia.Items{
+namespace GrowTopia.Items
+{
 
     [Serializable]
     public class ItemData

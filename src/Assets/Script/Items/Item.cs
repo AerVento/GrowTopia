@@ -11,6 +11,8 @@ namespace GrowTopia.Items{
         public string Id {get;}
         public string Name {get;}
         public string Description {get;}
+
+        public Sprite Sprite {get;}
     }
     
     [System.Serializable]

@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour
 {
     // Basic parameters
     private float _moveInputDirection = 0;
-    
+
     [Header("Movements")]
     public float MoveSpeed = 10;
     public float JumpPower = 10;
@@ -52,49 +52,58 @@ public class PlayerControl : MonoBehaviour
         CheckMoveInput();
     }
 
-    void FixedUpdate(){
+    void FixedUpdate()
+    {
         CheckGrounded();
         Move();
     }
 
-    private void CheckMoveInput(){
+    private void CheckMoveInput()
+    {
         _moveInputDirection = _moveInputAction.ReadValue<float>();
     }
 
-    private void CheckJumpInput(){
-        if(_nowJumpTimes < MaxJumpTimes){ // the jump on the ground will not be counted in _nowJumpTimes
+    private void CheckJumpInput()
+    {
+        if (_nowJumpTimes < MaxJumpTimes)
+        { // the jump on the ground will not be counted in _nowJumpTimes
             Jump();
         }
     }
 
-    private void CheckGrounded(){
-        _isGrounded = Physics2D.OverlapCircle(transform.position + Offset, Radius,GroundLayer) != null;
+    private void CheckGrounded()
+    {
+        _isGrounded = Physics2D.OverlapCircle(transform.position + Offset, Radius, GroundLayer) != null;
         _anim.SetBool("IsGrounded", _isGrounded);
-        if(_isGrounded)
+        if (_isGrounded)
             _nowJumpTimes = 0;
     }
 
-    private void Move(){
+    private void Move()
+    {
         _rb.velocity = new Vector2(_moveInputDirection * MoveSpeed, _rb.velocity.y);
-        _anim.SetFloat("HorizantalSpeed", Math.Abs(_rb.velocity.x));
+        _anim.SetFloat("HorizontalSpeed", Math.Abs(_rb.velocity.x));
         _anim.SetFloat("VerticalSpeed", Math.Abs(_rb.velocity.y));
     }
 
-    private void Jump(){
-        if(_isGrounded)
-            transform.position += new Vector3(0,Radius,0); // Escape from ground check
+    private void Jump()
+    {
+        if (_isGrounded)
+            transform.position += new Vector3(0, Radius, 0); // Escape from ground check
         _rb.velocity = new Vector2(_rb.velocity.x, JumpPower);
         _nowJumpTimes++;
     }
 
-    private void Flip(){
-        if(_moveInputDirection == 1)
-            transform.eulerAngles = new Vector3(0,0,0);
-        else if(_moveInputDirection == -1)
-            transform.eulerAngles = new Vector3(0,180,0);
+    private void Flip()
+    {
+        if (_moveInputDirection == 1)
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        else if (_moveInputDirection == -1)
+            transform.eulerAngles = new Vector3(0, 180, 0);
     }
 
-    void OnDrawGizmos(){
+    void OnDrawGizmos()
+    {
         Gizmos.color = _isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(transform.position + Offset, Radius);
     }

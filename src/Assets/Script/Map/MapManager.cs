@@ -4,21 +4,93 @@ using Framework.Singleton;
 using GrowTopia.Items;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-namespace GrowTopia.Map{
+namespace GrowTopia.Map
+{
     public class MapManager : MonoSingleton<MapManager>
     {
-        void Start(){
-            ItemData data = new ItemData();
-            data.AvailableItemList.Add(new Item(){ Id = "dev", Name = "Dev_Name", Description = "Test Item"});
-            data.AvailableItemList.Add(new Block(){ Id = "dirt", Name = "Dirt", Description = "This is dirt." });
-            data.AvailableItemList.Add(new Block(){ Id = "lava", Name = "Lava", Description = "This is lava." });
-            data.AvailableItemList.Add(new Block(){ Id = "stone", Name = "Stone", Description = "This is stone." });
-            JsonSerializerSettings settings = new JsonSerializerSettings(){ TypeNameHandling = TypeNameHandling.Auto};
-            Debug.Log(JsonConvert.SerializeObject(data,settings));
-        }
-        public void Load(MapData map){
+        // Components
+        [SerializeField]
+        private Grid _grid; // The grid component where all tilemaps attached to.
 
+        private MapData _current; // Current map data.
+
+        private TilemapSet _tilemapSet = new TilemapSet();
+
+        void Start()
+        {
+            _tilemapSet.Background = _grid.transform.Find("Background")?.GetComponent<Tilemap>();
+            _tilemapSet.Solid = _grid.transform.Find("Solid")?.GetComponent<Tilemap>();
+            _tilemapSet.Liquid = _grid.transform.Find("Liquid")?.GetComponent<Tilemap>();
+            _tilemapSet.Platform = _grid.transform.Find("Platform")?.GetComponent<Tilemap>();
+            _tilemapSet.Foreground = _grid.transform.Find("Foreground")?.GetComponent<Tilemap>();
+
+            if (!_tilemapSet.Valid)
+            {
+                Debug.Log("Missing one of the tilemaps layer.");
+            }
+        }
+
+        private void CreatePlatform(GridInfo grid)
+        {
+            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
+            {
+                _current.Grids[grid.Position] = grid;
+            }
+            _tilemapSet.Platform.SetTile(
+                position: new Vector3Int(grid.Position.x, grid.Position.y),
+                tile: grid.Block.Tile
+                );
+        }
+
+        private void CreateSolid(GridInfo grid)
+        {
+            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
+            {
+                _current.Grids[grid.Position] = grid;
+            }
+            _tilemapSet.Solid.SetTile(
+                position: new Vector3Int(grid.Position.x, grid.Position.y),
+                tile: grid.Block.Tile
+                );
+        }
+
+        private void CreateLiquid(GridInfo grid)
+        {
+            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
+            {
+                _current.Grids[grid.Position] = grid;
+            }
+            _tilemapSet.Solid.SetTile(
+                position: new Vector3Int(grid.Position.x, grid.Position.y),
+                tile: grid.Block.Tile
+                );
+        }
+
+        public void Load(MapData map)
+        {
+            foreach (var grid in map.Grids.Values)
+            {
+                // Distribute the grid info to the right function.
+                IReadOnlyBlock block = grid.Block;
+                if (block.Attribute == BlockAttribute.Platform)
+                {
+                    CreatePlatform(grid);
+                }
+                else
+                {
+                    switch (block.Property)
+                    {
+                        case BlockProperty.Solid:
+                            CreateSolid(grid); break;
+                        case BlockProperty.Liquid:
+                            CreateLiquid(grid); break;
+                    }
+                }
+            }
+
+            _current = map;
         }
     }
 }

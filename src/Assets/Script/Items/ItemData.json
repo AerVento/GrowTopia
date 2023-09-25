@@ -1,0 +1,29 @@
+{
+  "AvailableItemList": [
+    { "Id": "dev", "Name": "Dev_Name", "Description": "Test Item" },
+    {
+      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "Property": 0,
+      "Attribute": 0,
+      "Id": "dirt",
+      "Name": "Dirt",
+      "Description": "This is dirt."
+    },
+    {
+      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "Property": 0,
+      "Attribute": 1,
+      "Id": "lava",
+      "Name": "Lava",
+      "Description": "This is lava."
+    },
+    {
+      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "Property": 0,
+      "Attribute": 0,
+      "Id": "stone",
+      "Name": "Stone",
+      "Description": "This is stone."
+    }
+  ]
+}

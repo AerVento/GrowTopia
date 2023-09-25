@@ -56,10 +56,13 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "GrowTopia.sln",
+    "dotnet.defaultSolution": "src.sln",
     "cSpell.words": [
         "Behaviour",
+        "Newtonsoft",
+        "Rigidbody",
         "Scriptable",
+        "Tilemap",
         "Tilemaps",
         "Topia",
         "Yellowpaper"

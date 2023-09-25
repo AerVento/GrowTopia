@@ -11,6 +11,7 @@ namespace GrowTopia.Items{
     public interface IReadOnlyBlock : IReadOnlyItem {
         public BlockProperty Property {get;}
         public BlockAttribute Attribute {get;}
+        public TileBase Tile {get;}
     }
 
 
