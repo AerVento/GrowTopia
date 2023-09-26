@@ -62,25 +62,7 @@ namespace GrowTopia.Map
         public string ExtraContent;
 
 
-        public IReadOnlyBlock Block
-        {
-            get
-            {
-                IReadOnlyItem item = ItemLoaderManager.Instance.Items.GetValueOrDefault(BlockId);
-                if (item == null)
-                {
-                    Debug.LogError("Unknown block id:" + BlockId);
-                    return null;
-                }
-                IReadOnlyBlock block = item as IReadOnlyBlock;
-                if (block == null)
-                {
-                    Debug.LogError($"Id:{BlockId} is not a block but an item.");
-                    return null;
-                }
-                return block;
-            }
-        }
+        public IReadOnlyBlock Block => ItemLoaderManager.GetBlock(BlockId);
     }
 }
 

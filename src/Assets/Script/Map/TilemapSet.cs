@@ -7,10 +7,10 @@ namespace GrowTopia.Map
         public Tilemap Background;
         public Tilemap Solid;
         public Tilemap Liquid;
-        public Tilemap Platform;
+        public Tilemap Platforms;
         public Tilemap Foreground;
 
-        public bool Valid => Background && Solid && Liquid && Platform && Foreground;
+        public bool Valid => Background && Solid && Liquid && Platforms && Foreground;
     }
 }
 

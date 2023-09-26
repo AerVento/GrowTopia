@@ -11,7 +11,7 @@ namespace GrowTopia.Items{
         public string Id {get;}
         public string Name {get;}
         public string Description {get;}
-
+        public int MaxStack {get;}
         public Sprite Sprite {get;}
     }
     
@@ -23,12 +23,15 @@ namespace GrowTopia.Items{
         public string Name;
         public string Description;
 
+        public int MaxStack;
+
         public Sprite Sprite => GetSprite(Id).InventorySprite;
         
         #region Interface Implementation
         string IReadOnlyItem.Id => Id;
         string IReadOnlyItem.Name => Name;
         string IReadOnlyItem.Description => Description;
+        int IReadOnlyItem.MaxStack => MaxStack;
         #endregion
         
         public static ItemSpritePack GetSprite(string itemId){

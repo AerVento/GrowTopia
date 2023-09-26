@@ -46,6 +46,34 @@ namespace GrowTopia.Items
                 Debug.Log(item.Id + "," + item.GetType());
             }
         }
+
+        public static IReadOnlyItem GetItem(string ItemId)
+        {
+            IReadOnlyItem item = Instance.Items.GetValueOrDefault(ItemId);
+            if (item == null)
+            {
+                Debug.LogError("Unknown item id:" + ItemId);
+                return null;
+            }
+            return item;
+        }
+
+        public static IReadOnlyBlock GetBlock(string BlockId)
+        {
+            IReadOnlyItem item = Instance.Items.GetValueOrDefault(BlockId);
+            if (item == null)
+            {
+                Debug.LogError("Unknown block id:" + BlockId);
+                return null;
+            }
+            IReadOnlyBlock block = item as IReadOnlyBlock;
+            if (block == null)
+            {
+                Debug.LogError($"Id:{BlockId} is not a block but an item.");
+                return null;
+            }
+            return block;
+        }
     }
 }
 

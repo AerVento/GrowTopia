@@ -23,7 +23,7 @@ namespace GrowTopia.Map
             _tilemapSet.Background = _grid.transform.Find("Background")?.GetComponent<Tilemap>();
             _tilemapSet.Solid = _grid.transform.Find("Solid")?.GetComponent<Tilemap>();
             _tilemapSet.Liquid = _grid.transform.Find("Liquid")?.GetComponent<Tilemap>();
-            _tilemapSet.Platform = _grid.transform.Find("Platform")?.GetComponent<Tilemap>();
+            _tilemapSet.Platforms = _grid.transform.Find("Platforms")?.GetComponent<Tilemap>();
             _tilemapSet.Foreground = _grid.transform.Find("Foreground")?.GetComponent<Tilemap>();
 
             if (!_tilemapSet.Valid)
@@ -38,7 +38,7 @@ namespace GrowTopia.Map
             {
                 _current.Grids[grid.Position] = grid;
             }
-            _tilemapSet.Platform.SetTile(
+            _tilemapSet.Platforms.SetTile(
                 position: new Vector3Int(grid.Position.x, grid.Position.y),
                 tile: grid.Block.Tile
                 );
