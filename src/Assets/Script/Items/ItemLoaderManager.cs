@@ -36,6 +36,7 @@ namespace GrowTopia.Items
         {
             _data = new();
             // For test, load the data from disk.
+            // TODO: Get data from server.
             string content = File.ReadAllText("Assets/Script/Items/ItemData.json");
 
             ItemData data = JsonConvert.DeserializeObject<ItemData>(content, new ItemSerializationSettings());
@@ -43,7 +44,6 @@ namespace GrowTopia.Items
             foreach (var item in data.AvailableItemList)
             {
                 _data.Add(item.Id, item);
-                Debug.Log(item.Id + "," + item.GetType());
             }
         }
 

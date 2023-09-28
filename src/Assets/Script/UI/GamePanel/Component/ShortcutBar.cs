@@ -13,13 +13,6 @@ namespace GrowTopia.UI
 {
     public class ShortcutBar : MonoBehaviour
     {
-        /// <summary>
-        /// The delegate that gives a index and returns a inventory grid.
-        /// Shortcut Bar uses this to update item sprite.
-        /// </summary>
-        /// <param name="index">The item index.</param>
-        /// <returns>The inventory grid to show.</returns>
-        public delegate IReadOnlyInventoryGrid ShowSignal(int index);
         const int GRID_COUNT = 9;
 
         [SerializeField]
@@ -40,11 +33,19 @@ namespace GrowTopia.UI
         private int _current;
 
         /// <summary>
-        /// The binder that input the item sprite.
+        /// The inventory to show.
         /// </summary>
-        public ShowSignal DataBinder { get; set; }
+        public Inventory TargetInventory { get; set; } = null;
 
+        /// <summary>
+        /// Current selected index.
+        /// </summary>
         public int SelectedIndex => _current;
+
+        /// <summary>
+        /// Called when selected index changed.
+        /// </summary>
+        public event Action<int> OnSelectedChanged;
 
         // Start is called before the first frame update
         void Start()
@@ -53,6 +54,9 @@ namespace GrowTopia.UI
             _mouseScroll.Enable();
 
             InitializeGrids();
+
+            if (TargetInventory == null)
+                TargetInventory = IPlayer.Local.Inventory;
         }
 
         private void InitializeGrids()
@@ -88,6 +92,9 @@ namespace GrowTopia.UI
 
             _selection.anchoredPosition = Vector2.zero;
             _selection.SetParent(_showingGrids[_current].transform);
+
+            if (value.y != 0)
+                OnSelectedChanged?.Invoke(_current);
         }
 
         private void RefreshInfo()
@@ -95,9 +102,11 @@ namespace GrowTopia.UI
             for (int i = 0; i < _showingGrids.Count; i++)
             {
                 ShortcutBarGrid grid = _showingGrids[i];
-                IReadOnlyInventoryGrid data = DataBinder?.Invoke(i);
+                IReadOnlyInventoryGrid data = TargetInventory?.GetShortcutGrid(i);
 
-                if (!InventoryGridInfo.IsEmpty(data))
+                if (data == null || data.IsEmpty())
+                    grid.SetEmpty();
+                else
                 {
                     grid.Sprite = data.Item.Sprite;
                     grid.Count = data.Count;

@@ -5,9 +5,17 @@ using UnityEngine;
 
 namespace Framework.Singleton
 {
+    /// <summary>
+    /// Permanent singleton mono behaviour.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         protected static T _instance;
+
+        /// <summary>
+        /// Get the mono singleton instance. Throw exceptions when singleton doesn't exist.
+        /// </summary>
         public static T Instance
         {
             get
@@ -17,7 +25,7 @@ namespace Framework.Singleton
                 return _instance;
             }
         }
-
+        
         protected virtual void Awake()
         {
             InitializeSingleton();

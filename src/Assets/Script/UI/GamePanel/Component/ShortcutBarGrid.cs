@@ -6,6 +6,10 @@ namespace GrowTopia.UI
 {
     public class ShortcutBarGrid : MonoBehaviour
     {
+        [Tooltip("The item sprite used when the grid is empty.")]
+        [SerializeField]
+        private Sprite _emptySprite;
+
         [SerializeField]
         private Image _image;
 
@@ -37,6 +41,15 @@ namespace GrowTopia.UI
                 else
                     _countText.text = value.ToString();
             }
+        }
+
+        /// <summary>
+        /// Set this grid to shown as empty grid.
+        /// </summary>
+        public void SetEmpty()
+        {
+            Count = 1;
+            Sprite = _emptySprite;
         }
 
         void Start()

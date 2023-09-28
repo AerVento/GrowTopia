@@ -6,17 +6,40 @@ using UnityEngine;
 
 namespace GrowTopia.Player
 {
+    public enum InventoryGridType
+    {
+        None,
+        Shortcut,
+        Inventory,
+    }
+
     public interface IReadOnlyInventoryGrid
     {
         public string ItemId { get; }
         public int Count { get; }
+        public InventoryGridType Type { get; }
         public IReadOnlyItem Item { get; }
+
+        /// <summary>
+        /// Check if is a empty grid.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsEmpty();
+
+        /// <summary>
+        /// Create a new grid with the exactly same values of the source grid.
+        /// </summary>
+        /// <param name="source"></param>
+        public InventoryGridInfo Clone();
     }
 
     [System.Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class InventoryGridInfo : IReadOnlyInventoryGrid
     {
+        /// <summary>
+        /// A read only grid presents empty grid.
+        /// </summary>
         public static InventoryGridInfo Empty => new InventoryGridInfo()
         {
             ItemId = "",
@@ -25,22 +48,74 @@ namespace GrowTopia.Player
 
         public string ItemId;
         public int Count;
+        public InventoryGridType Type = InventoryGridType.None;
+
 
         #region Interface Implements
         string IReadOnlyInventoryGrid.ItemId => ItemId;
+
         int IReadOnlyInventoryGrid.Count => Count;
+
+        InventoryGridType IReadOnlyInventoryGrid.Type => Type;
+
+        public IReadOnlyItem Item
+        {
+            get
+            {
+                if (IsEmpty())
+                    throw new System.InvalidOperationException("Trying access the item Property with a empty inventory grid.");
+                else
+                    return ItemLoaderManager.GetItem(ItemId);
+            }
+        }
+
+        public bool IsEmpty() => IsEmpty(this);
+
+        public InventoryGridInfo Clone() => Clone(this);
+
         #endregion
 
-        public IReadOnlyItem Item => ItemLoaderManager.GetItem(ItemId);
+
+        /// <summary>
+        /// Read the values of the source grid and apply it to this one.
+        /// </summary>
+        /// <param name="source"></param>
+        public void Copy(InventoryGridInfo source) => Copy(source, this);
+
+        /// <summary>
+        /// Set this grid to empty.
+        /// </summary>
+        public void Clear()
+        {
+            var empty = Empty;
+            ItemId = empty.ItemId;
+            Count = empty.Count;
+            // we don't want the grid lose its type while Clear();
+        }
 
         public static bool IsEmpty(IReadOnlyInventoryGrid value)
         {
-            return value.ItemId == "" && value.Count == 0;
+            return value != null && value.ItemId == "" && value.Count == 0;
+        }
+
+        public static void Copy(IReadOnlyInventoryGrid source, InventoryGridInfo destination)
+        {
+            destination.ItemId = source.ItemId;
+            destination.Count = source.Count;
+            destination.Type = source.Type;
+        }
+
+        public static InventoryGridInfo Clone(IReadOnlyInventoryGrid source)
+        {
+            var grid = new InventoryGridInfo();
+            Copy(source, grid);
+            return grid;
         }
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
     }
 }
