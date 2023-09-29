@@ -36,15 +36,15 @@ namespace GrowTopia.Map
 
             // apply these map data to the tilemap
             Load();
+            DrawMapBoarder();
 
-            CreateBlock(new Vector2Int(3,8), ItemLoaderManager.GetBlock("stone"));
+            CreateBlock(new Vector2Int(3, 8), ItemLoaderManager.GetBlock("stone"));
         }
 
-        // set the tilemap tile
-        private void SetTile(Vector2Int position, IReadOnlyBlock block)
+        // get the right layer for the block
+        private TilemapLayer GetLayerOfBlock(IReadOnlyBlock block)
         {
             TilemapLayer affectedLayer;
-            // Distribute the grid info to the right map layer
             if (block.Attribute == BlockAttribute.Platform)
                 affectedLayer = TilemapLayer.Platforms;
             else
@@ -56,11 +56,8 @@ namespace GrowTopia.Map
                     _ => default
                 };
             }
-            // set tilemap tile
-            _tilemapSet.GetMapLayer(affectedLayer)?.SetTile(
-                position: new Vector3Int(position.x, position.y),
-                tile: block == null ? null : block.Tile
-                );
+
+            return affectedLayer;
         }
 
         /// <summary>
@@ -70,11 +67,19 @@ namespace GrowTopia.Map
         /// <param name="grid">The new grid to replace. Null to set the position empty.</param>
         private void ReplaceBlockInternal(Vector2Int position, IReadOnlyMapGrid grid)
         {
+            IReadOnlyBlock block = grid.Block;
+
             // set the map data 
-            CurrentMap.SetGrid(grid.Position, grid);
+            CurrentMap.SetGrid(position, grid);
+
+            // Distribute the grid info to the right map layer
+            TilemapLayer layer = GetLayerOfBlock(block);
 
             // set the tile
-            SetTile(position, grid == null ? null : grid.Block);
+            _tilemapSet.GetMapLayer(layer)?.SetTile(
+                position: new Vector3Int(position.x, position.y),
+                tile: grid.Block.Tile
+                );
         }
 
 
@@ -97,7 +102,26 @@ namespace GrowTopia.Map
         /// <param name="position"></param>
         public void DestroyBlock(Vector2Int position)
         {
-            ReplaceBlockInternal(position, null);
+            if (_currentMapHandler.Target.TryGetGrid(position, out var grid))
+            {
+                TilemapLayer layer = GetLayerOfBlock(grid.Block);
+                _tilemapSet.GetMapLayer(layer).SetTile(
+                    new Vector3Int(position.x, position.y), tile:null
+                );
+
+                _currentMapHandler.Target.SetGrid(position, null);
+            }
+        }
+
+        /// <summary>
+        /// Transform a world position to grid position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Vector2Int WorldToGrid(Vector3 position)
+        {
+            Vector3Int pos = _grid.WorldToCell(position);
+            return new Vector2Int(pos.x, pos.y);
         }
 
         /// <summary>
@@ -108,8 +132,23 @@ namespace GrowTopia.Map
             foreach (var (position, grid) in _currentMapHandler.Target)
             {
                 IReadOnlyBlock block = grid.Block;
-                SetTile(position, block);
+                _tilemapSet.GetMapLayer(
+                    layer:GetLayerOfBlock(block)
+                    ).SetTile(new Vector3Int(position.x, position.y), block.Tile);
             }
+        }
+
+        private void DrawMapBoarder()
+        {
+            Vector3 leftBottom = _grid.CellToWorld(Vector3Int.zero);
+            Vector3 leftTop = _grid.CellToWorld(Vector3Int.zero + Vector3Int.up * CurrentMap.Height);
+            Vector3 rightBottom = _grid.CellToWorld(Vector3Int.zero + Vector3Int.right * CurrentMap.Width);
+            Vector3 rightTop = _grid.CellToWorld(Vector3Int.zero + Vector3Int.up * CurrentMap.Height + Vector3Int.right * CurrentMap.Width);
+
+            Debug.DrawLine(leftBottom, leftTop, Color.red, 120f);
+            Debug.DrawLine(leftTop, rightTop, Color.red, 120f);
+            Debug.DrawLine(rightTop, rightBottom, Color.red, 120f);
+            Debug.DrawLine(rightBottom, leftBottom, Color.red, 120f);
         }
     }
 }

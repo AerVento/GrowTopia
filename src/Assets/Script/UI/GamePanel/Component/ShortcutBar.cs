@@ -50,7 +50,7 @@ namespace GrowTopia.UI
         // Start is called before the first frame update
         void Start()
         {
-            _mouseScroll = InputManager.Instance.GetAction("PlayerControl/Move/Select");
+            _mouseScroll = InputManager.Instance.GetAction("PlayerControl/UI/Select");
             _mouseScroll.Enable();
 
             InitializeGrids();

@@ -59,7 +59,7 @@ namespace GrowTopia.Map
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        public bool IsEmpty(Vector2Int position) => !IsInMap(position) || _grids.ContainsKey(position);
+        public bool IsEmpty(Vector2Int position) => !IsInMap(position) || !_grids.ContainsKey(position);
 
         /// <summary>
         /// Get the read only grid info at given position. 
@@ -139,7 +139,7 @@ namespace GrowTopia.Map
         private MapChangedContext SetGridWithContext(Vector2Int position, IReadOnlyMapGrid grid, MapChangedContext context = null)
         {
             // if the context was enabled and find different on comparing the current grid to the new one
-            if (context != null && !CheckBlock(position, grid.Block))
+            if (context != null && !CheckBlock(position, grid == null ? null : grid.Block))
             {
                 context.AddEntry(position, GetGrid(position), grid);
             }

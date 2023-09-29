@@ -11,6 +11,12 @@ namespace GrowTopia.Items{
     public interface IReadOnlyBlock : IReadOnlyItem {
         public BlockProperty Property {get;}
         public BlockAttribute Attribute {get;}
+        
+        /// <summary>
+        /// To define the needed time to break the block.
+        /// </summary>
+        /// <value>Milliseconds needed to break the block.</value>
+        public int Hardness {get;}
         public TileBase Tile {get;}
     }
 
@@ -22,11 +28,14 @@ namespace GrowTopia.Items{
         public BlockProperty Property;
         public BlockAttribute Attribute;
 
+        public int Hardness;
+
         public TileBase Tile => GetSprite(Id).Tile;
 
         #region Interface Implementation
         BlockProperty IReadOnlyBlock.Property => Property;
         BlockAttribute IReadOnlyBlock.Attribute => Attribute;
+        int IReadOnlyBlock.Hardness => Hardness;
         #endregion
 
         public new static BlockSpritePack GetSprite(string itemId){

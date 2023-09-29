@@ -8,7 +8,8 @@
       "Id": "dirt",
       "Name": "Dirt",
       "Description": "This is dirt.",
-      "MaxStack": 64
+      "MaxStack": 64,
+      "Hardness": 1000
     },
     {
       "$type": "GrowTopia.Items.Block, Assembly-CSharp",
@@ -17,7 +18,8 @@
       "Id": "lava",
       "Name": "Lava",
       "Description": "This is lava.",
-      "MaxStack": 64
+      "MaxStack": 64,
+      "Hardness": 3000
     },
     {
       "$type": "GrowTopia.Items.Block, Assembly-CSharp",
@@ -26,7 +28,8 @@
       "Id": "stone",
       "Name": "Stone",
       "Description": "This is stone.",
-      "MaxStack": 64
+      "MaxStack": 64,
+      "Hardness": 5000
     }
   ]
 }
