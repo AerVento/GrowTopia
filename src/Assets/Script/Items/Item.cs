@@ -5,16 +5,18 @@ using GrowTopia.Data;
 using UnityEngine;
 using Newtonsoft.Json;
 
-namespace GrowTopia.Items{
+namespace GrowTopia.Items
+{
 
-    public interface IReadOnlyItem {
-        public string Id {get;}
-        public string Name {get;}
-        public string Description {get;}
-        public int MaxStack {get;}
-        public Sprite Sprite {get;}
+    public interface IReadOnlyItem
+    {
+        public string Id { get; }
+        public string Name { get; }
+        public string Description { get; }
+        public int MaxStack { get; }
+        public Sprite Sprite { get; }
     }
-    
+
     [System.Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class Item : IReadOnlyItem
@@ -26,19 +28,20 @@ namespace GrowTopia.Items{
         public int MaxStack;
 
         public Sprite Sprite => GetSprite(Id).InventorySprite;
-        
+
         #region Interface Implementation
         string IReadOnlyItem.Id => Id;
         string IReadOnlyItem.Name => Name;
         string IReadOnlyItem.Description => Description;
         int IReadOnlyItem.MaxStack => MaxStack;
         #endregion
-        
-        public static ItemSpritePack GetSprite(string itemId){
-            
+
+        public static ItemSpritePack GetSprite(string itemId)
+        {
+
             ItemSpriteMap map = SingletonSOManager.Instance.GetSOFile<ItemSpriteMap>("ItemSpriteMap");
 
-            if(map == null)
+            if (map == null)
             {
                 Debug.LogError("Cannot find Item Sprite Map.");
                 return null;

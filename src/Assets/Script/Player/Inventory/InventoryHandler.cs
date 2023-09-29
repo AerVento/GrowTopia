@@ -47,6 +47,7 @@ namespace GrowTopia.Player
             catch (System.Exception e)
             {
                 Debug.LogException(e);
+                _target = new Inventory();
                 return false;
             }
         }

@@ -73,7 +73,7 @@ public class PlayerControl : MonoBehaviour
 
     private void CheckGrounded()
     {
-        _isGrounded = Physics2D.OverlapCircle(transform.position + Offset, Radius, GroundLayer) != null;
+        _isGrounded = _rb.velocity.y < 0.1f && Physics2D.OverlapCircle(transform.position + Offset, Radius, GroundLayer) != null;
         _anim.SetBool("IsGrounded", _isGrounded);
         if (_isGrounded)
             _nowJumpTimes = 0;

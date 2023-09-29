@@ -73,7 +73,7 @@ namespace GrowTopia.Player
         // Update is called once per frame
         void Update()
         {
-            Debug.Log(Selected);
+            
         }
 
         void OnDestroy()

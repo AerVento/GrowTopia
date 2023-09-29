@@ -8,89 +8,108 @@ using UnityEngine.Tilemaps;
 
 namespace GrowTopia.Map
 {
+    /// <summary>
+    /// The controller of map.
+    /// </summary>
     public class MapManager : MonoSingleton<MapManager>
     {
         // Components
         [SerializeField]
         private Grid _grid; // The grid component where all tilemaps attached to.
 
-        private MapData _current; // Current map data.
+        private MapDataHandler _currentMapHandler = new MapDataHandler();
 
         private TilemapSet _tilemapSet = new TilemapSet();
 
+        /// <summary>
+        /// Current map data.
+        /// </summary>
+        public MapData CurrentMap => _currentMapHandler.Target;
+
         void Start()
         {
-            _tilemapSet.Background = _grid.transform.Find("Background")?.GetComponent<Tilemap>();
-            _tilemapSet.Solid = _grid.transform.Find("Solid")?.GetComponent<Tilemap>();
-            _tilemapSet.Liquid = _grid.transform.Find("Liquid")?.GetComponent<Tilemap>();
-            _tilemapSet.Platforms = _grid.transform.Find("Platforms")?.GetComponent<Tilemap>();
-            _tilemapSet.Foreground = _grid.transform.Find("Foreground")?.GetComponent<Tilemap>();
+            // get each tilemap layer
+            _tilemapSet.LoadLayer(_grid);
 
-            if (!_tilemapSet.Valid)
-            {
-                Debug.Log("Missing one of the tilemaps layer.");
-            }
+            // load map data from extern
+            _currentMapHandler.Load();
+
+            // apply these map data to the tilemap
+            Load();
+
+            CreateBlock(new Vector2Int(3,8), ItemLoaderManager.GetBlock("stone"));
         }
 
-        private void CreatePlatform(GridInfo grid)
+        // set the tilemap tile
+        private void SetTile(Vector2Int position, IReadOnlyBlock block)
         {
-            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
+            TilemapLayer affectedLayer;
+            // Distribute the grid info to the right map layer
+            if (block.Attribute == BlockAttribute.Platform)
+                affectedLayer = TilemapLayer.Platforms;
+            else
             {
-                _current.Grids[grid.Position] = grid;
+                affectedLayer = block.Property switch
+                {
+                    BlockProperty.Solid => TilemapLayer.Solid,
+                    BlockProperty.Liquid => TilemapLayer.Liquid,
+                    _ => default
+                };
             }
-            _tilemapSet.Platforms.SetTile(
-                position: new Vector3Int(grid.Position.x, grid.Position.y),
-                tile: grid.Block.Tile
+            // set tilemap tile
+            _tilemapSet.GetMapLayer(affectedLayer)?.SetTile(
+                position: new Vector3Int(position.x, position.y),
+                tile: block == null ? null : block.Tile
                 );
         }
 
-        private void CreateSolid(GridInfo grid)
+        /// <summary>
+        /// Apply the replacement to map data, and set tile on tilemap layers.
+        /// </summary>
+        /// <param name="position">The replacement position.</param> 
+        /// <param name="grid">The new grid to replace. Null to set the position empty.</param>
+        private void ReplaceBlockInternal(Vector2Int position, IReadOnlyMapGrid grid)
         {
-            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
-            {
-                _current.Grids[grid.Position] = grid;
-            }
-            _tilemapSet.Solid.SetTile(
-                position: new Vector3Int(grid.Position.x, grid.Position.y),
-                tile: grid.Block.Tile
-                );
+            // set the map data 
+            CurrentMap.SetGrid(grid.Position, grid);
+
+            // set the tile
+            SetTile(position, grid == null ? null : grid.Block);
         }
 
-        private void CreateLiquid(GridInfo grid)
+
+        /// <summary>
+        /// Create a block on specified location. If the location already have a block, it will be replaced.
+        /// </summary>
+        /// <param name="position">The target position.</param>
+        /// <param name="blockType">The block to create. </param>
+        public void CreateBlock(Vector2Int position, IReadOnlyBlock blockType)
         {
-            if (!_current.Grids.TryAdd(grid.Position, grid)) // if the block on position already exist 
-            {
-                _current.Grids[grid.Position] = grid;
-            }
-            _tilemapSet.Solid.SetTile(
-                position: new Vector3Int(grid.Position.x, grid.Position.y),
-                tile: grid.Block.Tile
-                );
+            if (blockType == null)
+                DestroyBlock(position);
+            else
+                ReplaceBlockInternal(position, new MapGridInfo(position, blockType.Id));
         }
 
-        public void Load(MapData map)
+        /// <summary>
+        /// Destroy a block on specified location. If the location is empty, it will do nothing.
+        /// </summary>
+        /// <param name="position"></param>
+        public void DestroyBlock(Vector2Int position)
         {
-            foreach (var grid in map.Grids.Values)
+            ReplaceBlockInternal(position, null);
+        }
+
+        /// <summary>
+        /// Load the map data and set tile for each entry.
+        /// </summary>
+        public void Load()
+        {
+            foreach (var (position, grid) in _currentMapHandler.Target)
             {
-                // Distribute the grid info to the right function.
                 IReadOnlyBlock block = grid.Block;
-                if (block.Attribute == BlockAttribute.Platform)
-                {
-                    CreatePlatform(grid);
-                }
-                else
-                {
-                    switch (block.Property)
-                    {
-                        case BlockProperty.Solid:
-                            CreateSolid(grid); break;
-                        case BlockProperty.Liquid:
-                            CreateLiquid(grid); break;
-                    }
-                }
+                SetTile(position, block);
             }
-
-            _current = map;
         }
     }
 }

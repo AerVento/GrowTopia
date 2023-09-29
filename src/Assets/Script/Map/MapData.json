@@ -1,0 +1,80 @@
+﻿{
+  "_grids": {
+    "item((0, 0)))": {
+      "key": {
+        "x": 0,
+        "y": 0
+      },
+      "value": {
+        "Position": {
+          "x": 0,
+          "y": 0
+        },
+        "BlockId": "lava",
+        "ExtraContent": ""
+      }
+    },
+    "item((1, 1)))": {
+      "key": {
+        "x": 1,
+        "y": 1
+      },
+      "value": {
+        "Position": {
+          "x": 1,
+          "y": 1
+        },
+        "BlockId": "stone",
+        "ExtraContent": ""
+      }
+    },
+    "item((2, 2)))": {
+      "key": {
+        "x": 2,
+        "y": 2
+      },
+      "value": {
+        "Position": {
+          "x": 2,
+          "y": 2
+        },
+        "BlockId": "lava",
+        "ExtraContent": ""
+      }
+    },
+    "item((3, 6)))": {
+      "key": {
+        "x": 3,
+        "y": 6
+      },
+      "value": {
+        "Position": {
+          "x": 3,
+          "y": 6
+        },
+        "BlockId": "stone",
+        "ExtraContent": ""
+      }
+    },
+    "item((3, 8)))": {
+      "key": {
+        "x": 3,
+        "y": 8
+      },
+      "value": {
+        "Position": {
+          "x": 3,
+          "y": 8
+        },
+        "BlockId": "stone",
+        "ExtraContent": ""
+      }
+    }
+  },
+  "Width": 20,
+  "Height": 60,
+  "SpawnPoint": {
+    "x": 0,
+    "y": 0
+  }
+}
