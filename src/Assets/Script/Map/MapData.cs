@@ -193,16 +193,6 @@ namespace GrowTopia.Map
                 _onMapChanged?.Invoke(context);
         }
 
-        public static string Serialize(MapData data)
-        {
-            return JsonConvert.SerializeObject(data, new MapSerializationSettings());
-        }
-
-        public static MapData Deserialize(string content)
-        {
-            return JsonConvert.DeserializeObject<MapData>(content, new MapSerializationSettings());
-        }
-
         public IEnumerator<KeyValuePair<Vector2Int, IReadOnlyMapGrid>> GetEnumerator()
         {
             foreach (var pair in _grids)
