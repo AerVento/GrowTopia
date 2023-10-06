@@ -26,3 +26,7 @@ MonoBehaviour:
       Value:
         ItemId: stone
         InventorySprite: {fileID: 21300000, guid: 4b24799f878838648a47ba7eb9f650d2, type: 3}
+    - Key: container
+      Value:
+        ItemId: container
+        InventorySprite: {fileID: 21300000, guid: 50d8d23fa07b6b7439587f47b721a1de, type: 3}

@@ -8,15 +8,11 @@ using Newtonsoft.Json;
 namespace GrowTopia.Items
 {
 
-    public interface IReadOnlyItem
-    {
-        public string Id { get; }
-        public string Name { get; }
-        public string Description { get; }
-        public int MaxStack { get; }
-        public Sprite Sprite { get; }
-    }
 
+
+    /// <summary>
+    /// Prototype of items. It describes inherent property of an item.
+    /// </summary>
     [System.Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class Item : IReadOnlyItem

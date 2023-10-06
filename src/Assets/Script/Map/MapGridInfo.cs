@@ -4,74 +4,39 @@ using UnityEngine;
 
 namespace GrowTopia.Map
 {
-    public interface IReadOnlyMapGrid
-    {
-        public Vector2Int Position { get; }
-        public string BlockId { get; }
-        public string ExtraContent { get; }
-
-        public IReadOnlyBlock Block { get; }
-
-        /// <summary>
-        /// Clone this grid.
-        /// </summary>
-        /// <returns></returns>
-        public MapGridInfo Clone();
-    }
 
     [System.Serializable]
     [JsonObject(MemberSerialization.Fields)]
-    public struct MapGridInfo : IReadOnlyMapGrid
+    public struct MapGridInfo
     {
         /// <summary>
         /// The position of the grid.
         /// </summary>
         public Vector2Int Position;
 
-        /// <summary>
-        /// The id of the block.
-        /// </summary>
-        public string BlockId;
+        public IMapBlock MapBlock;
+
 
         /// <summary>
-        /// For variant block types, there may have some status which was saved on Server. 
-        /// Client needs these content to recover to the correct status.
+        /// Gives a block id to create the grid info. 
+        /// It will use the the block prototype <see cref="StaticBlock"/> as map block.
         /// </summary>
-        public string ExtraContent;
-
-        #region Interface Implements
-        Vector2Int IReadOnlyMapGrid.Position => Position;
-        string IReadOnlyMapGrid.BlockId => BlockId;
-        string IReadOnlyMapGrid.ExtraContent => ExtraContent;
-        #endregion
-
-        public MapGridInfo(Vector2Int pos, string blockId, string extraContent = "")
+        /// <param name="pos">The position of grid.</param>
+        /// <param name="blockId">The block id of block.</param>
+        public MapGridInfo(Vector2Int pos, string blockId)
         {
             Position = pos;
-            BlockId = blockId;
-            ExtraContent = extraContent;
+            MapBlock = ItemLoaderManager.GetBlock(blockId).CreateInstance();
         }
 
         /// <summary>
-        /// The current block of this grid.
+        /// Gives a map block instance to create the grid info.
         /// </summary>
-        public IReadOnlyBlock Block
-        {
-            get => ItemLoaderManager.GetBlock(BlockId);
-            set
-            {
-                BlockId = value.Id;
-                // TODO: 现在在修改方块时只是修改了当前格子方块ID，以后ExtraContent相关完善后需要将这部分内容告知给新的方块。
-            }
-        }
-
-        public MapGridInfo Clone() => Clone(this);
-
-        public static MapGridInfo Clone(IReadOnlyMapGrid source)
-        {
-            var grid = new MapGridInfo(source.Position, source.BlockId, source.ExtraContent);
-
-            return grid;
+        /// <param name="pos">The position of grid.</param>
+        /// <param name="block">The map block instance.</param>
+        public MapGridInfo(Vector2Int pos, IMapBlock block){
+            Position = pos;
+            MapBlock = block;
         }
     }
 }

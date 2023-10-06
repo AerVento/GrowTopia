@@ -9,7 +9,7 @@ namespace GrowTopia.Player
     /// </summary>
     public class InventoryHandler
     {
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings SETTINGS = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented
         };
@@ -40,8 +40,8 @@ namespace GrowTopia.Player
                 // For test, read inventory from disk.
                 // TODO: Get inventory from server.
                 string content = File.ReadAllText("Assets/Script/Player/Inventory.json");
-                _target = JsonConvert.DeserializeObject<Inventory>(content, Settings);
-                _target.OnInventoryChanged += context => Save();
+                _target = JsonConvert.DeserializeObject<Inventory>(content, SETTINGS);
+
                 return true;
             }
             catch (System.Exception e)
@@ -49,6 +49,10 @@ namespace GrowTopia.Player
                 Debug.LogException(e);
                 _target = new Inventory();
                 return false;
+            }
+            finally
+            {
+                _target.OnInventoryChanged += context => Save();
             }
         }
 
@@ -63,7 +67,7 @@ namespace GrowTopia.Player
             {
                 // For test, save inventory to disk.
                 // TODO: Upload inventory to server.
-                string content = JsonConvert.SerializeObject(_target, Settings);
+                string content = JsonConvert.SerializeObject(_target, SETTINGS);
                 File.WriteAllText("Assets/Script/Player/Inventory.json", content, Encoding);
                 return true;
             }

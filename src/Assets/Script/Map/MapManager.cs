@@ -31,14 +31,13 @@ namespace GrowTopia.Map
             // get each tilemap layer
             _tilemapSet.LoadLayer(_grid);
 
+
             // load map data from extern
             _currentMapHandler.Load();
 
             // apply these map data to the tilemap
             Load();
             DrawMapBoarder();
-
-            CreateBlock(new Vector2Int(3, 8), ItemLoaderManager.GetBlock("stone"));
         }
 
         // get the right layer for the block
@@ -65,9 +64,9 @@ namespace GrowTopia.Map
         /// </summary>
         /// <param name="position">The replacement position.</param> 
         /// <param name="grid">The new grid to replace. Null to set the position empty.</param>
-        private void ReplaceBlockInternal(Vector2Int position, IReadOnlyMapGrid grid)
+        private void ReplaceBlockInternal(Vector2Int position, MapGridInfo grid)
         {
-            IReadOnlyBlock block = grid.Block;
+            IReadOnlyBlock block = grid.MapBlock.Block;
 
             // set the map data 
             CurrentMap.SetGrid(position, grid);
@@ -78,22 +77,37 @@ namespace GrowTopia.Map
             // set the tile
             _tilemapSet.GetMapLayer(layer)?.SetTile(
                 position: new Vector3Int(position.x, position.y),
-                tile: grid.Block.Tile
+                tile: grid.MapBlock.Tile
                 );
         }
 
 
         /// <summary>
         /// Create a block on specified location. If the location already have a block, it will be replaced.
+        /// Use block id to create a map grid, and the block of the grid was created from the block prototype.
         /// </summary>
         /// <param name="position">The target position.</param>
-        /// <param name="blockType">The block to create. </param>
-        public void CreateBlock(Vector2Int position, IReadOnlyBlock blockType)
+        /// <param name="blockId">The block id of the prototype. </param>
+        public void CreateBlock(Vector2Int position, string blockId)
         {
-            if (blockType == null)
+            if (blockId == null)
                 DestroyBlock(position);
             else
-                ReplaceBlockInternal(position, new MapGridInfo(position, blockType.Id));
+                ReplaceBlockInternal(position, new MapGridInfo(position, blockId));
+        }
+
+        /// <summary>
+        /// Create a block on specified location. If the location already have a block, it will be replaced.
+        /// Use IMapBlock instance to create a map grid, and the block of the grid is the given instance.
+        /// </summary>
+        /// <param name="position">The target position.</param>
+        /// <param name="block">The map block instance to create. </param>
+        public void CreateBlock(Vector2Int position, IMapBlock block)
+        {
+            if (block == null)
+                DestroyBlock(position);
+            else
+                ReplaceBlockInternal(position, new MapGridInfo(position, block));
         }
 
         /// <summary>
@@ -104,7 +118,7 @@ namespace GrowTopia.Map
         {
             if (_currentMapHandler.Target.TryGetGrid(position, out var grid))
             {
-                TilemapLayer layer = GetLayerOfBlock(grid.Block);
+                TilemapLayer layer = GetLayerOfBlock(grid.MapBlock.Block);
                 _tilemapSet.GetMapLayer(layer).SetTile(
                     new Vector3Int(position.x, position.y), tile:null
                 );
@@ -131,9 +145,9 @@ namespace GrowTopia.Map
         {
             foreach (var (position, grid) in _currentMapHandler.Target)
             {
-                IReadOnlyBlock block = grid.Block;
+                IMapBlock block = grid.MapBlock;
                 _tilemapSet.GetMapLayer(
-                    layer:GetLayerOfBlock(block)
+                    layer:GetLayerOfBlock(grid.MapBlock.Block)
                     ).SetTile(new Vector3Int(position.x, position.y), block.Tile);
             }
         }

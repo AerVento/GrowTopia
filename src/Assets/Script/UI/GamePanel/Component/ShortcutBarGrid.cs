@@ -35,6 +35,10 @@ namespace GrowTopia.UI
             set
             {
                 _count = value;
+                if(value == 0)
+                    _countText.color = Color.red;
+                else
+                    _countText.color = Color.black;
                 // if count = 1, we don't show the count text
                 if (value == 1)
                     _countText.text = "";

@@ -10,7 +10,7 @@ namespace GrowTopia.Map
 {
     [System.Serializable]
     [JsonObject(MemberSerialization.Fields)]
-    public class MapData : IEnumerable<KeyValuePair<Vector2Int, IReadOnlyMapGrid>>
+    public class MapData : IEnumerable<KeyValuePair<Vector2Int, MapGridInfo>>
     {
         private Dictionary<Vector2Int, MapGridInfo> _grids = new Dictionary<Vector2Int, MapGridInfo>();
 
@@ -67,7 +67,7 @@ namespace GrowTopia.Map
         /// </summary>
         /// <param name="position"></param>
         /// <returns>The grid info, or null if the position is empty.</returns>
-        public IReadOnlyMapGrid GetGrid(Vector2Int position)
+        public MapGridInfo? GetGrid(Vector2Int position)
         {
             if (IsInMap(position))
             {
@@ -85,10 +85,13 @@ namespace GrowTopia.Map
         /// <param name="position">Target position.</param>
         /// <param name="grid">Output grid info.</param>
         /// <returns>True if the position has a block.</returns>
-        public bool TryGetGrid(Vector2Int position, out IReadOnlyMapGrid grid)
+        public bool TryGetGrid(Vector2Int position, out MapGridInfo grid)
         {
-            grid = GetGrid(position);
-            return grid != null;
+            grid = default;
+            MapGridInfo? result = GetGrid(position);
+            if(result.HasValue)
+                grid = result.Value;
+            return result.HasValue;
         }
 
         /// <summary>
@@ -97,11 +100,11 @@ namespace GrowTopia.Map
         /// </summary>
         /// <param name="positions">Target positions.</param>
         /// <returns>A enumerable grid info result.</returns>
-        public IEnumerable<KeyValuePair<Vector2Int, IReadOnlyMapGrid>> GetGrids(IEnumerable<Vector2Int> positions)
+        public IEnumerable<KeyValuePair<Vector2Int, MapGridInfo?>> GetGrids(IEnumerable<Vector2Int> positions)
         {
             foreach (var pos in positions)
             {
-                yield return new KeyValuePair<Vector2Int, IReadOnlyMapGrid>(pos, GetGrid(pos));
+                yield return new KeyValuePair<Vector2Int, MapGridInfo?>(pos, GetGrid(pos));
             }
         }
 
@@ -111,17 +114,17 @@ namespace GrowTopia.Map
         /// <param name="position">The target position.</param>
         /// <param name="block">The block to check. Null to check if empty.</param>
         /// <returns></returns>
-        public bool CheckBlock(Vector2Int position, IReadOnlyBlock block)
+        public bool CheckBlock(Vector2Int position, IMapBlock block)
         {
             // if the param was null then just check if empty
             if(block == null)
                 return IsEmpty(position);
             
             // otherwise, get the grid of target position to have a check. 
-            if (TryGetGrid(position, out IReadOnlyMapGrid grid))
+            if (TryGetGrid(position, out MapGridInfo grid))
             {
                 // uses the block id to check if they were the same.
-                return grid.BlockId == block.Id;
+                return IMapBlock.CompareBlock(grid.MapBlock, block);
             }
             else // the target position is empty but the given block is not.
                 return false;
@@ -136,16 +139,16 @@ namespace GrowTopia.Map
         /// <param name="grid">The new grid content. Null to set empty.</param>
         /// <param name="context">The context used to collect the changes. Null if not needed.</param>
         /// <returns></returns>
-        private MapChangedContext SetGridWithContext(Vector2Int position, IReadOnlyMapGrid grid, MapChangedContext context = null)
+        private MapChangedContext SetGridWithContext(Vector2Int position, MapGridInfo? grid, MapChangedContext context = null)
         {
             // if the context was enabled and find different on comparing the current grid to the new one
-            if (context != null && !CheckBlock(position, grid == null ? null : grid.Block))
+            if (context != null && !CheckBlock(position, grid.HasValue ? grid.Value.MapBlock : null))
             {
                 context.AddEntry(position, GetGrid(position), grid);
             }
 
             // special path for null: set grid empty by removing the dictionary key
-            if (grid == null)
+            if (!grid.HasValue)
             {
                 if (_grids.ContainsKey(position))
                     _grids.Remove(position);
@@ -155,9 +158,9 @@ namespace GrowTopia.Map
                 // only data clones will be stored 
                 // because it is reference type and we don't want to let the extern to keep the access directly to the grid in dictionary.
                 if (_grids.ContainsKey(position))
-                    _grids[position] = grid.Clone();
+                    _grids[position] = grid.Value;
                 else
-                    _grids.Add(position, grid.Clone());
+                    _grids.Add(position, grid.Value);
             }
 
             return context;
@@ -168,7 +171,7 @@ namespace GrowTopia.Map
         /// </summary>
         /// <param name="position">Target position.</param>
         /// <param name="grid">The grid info. Set null to set the position empty.</param>
-        public void SetGrid(Vector2Int position, IReadOnlyMapGrid grid)
+        public void SetGrid(Vector2Int position, MapGridInfo? grid)
         {
             if (IsInMap(position))
             {
@@ -179,7 +182,7 @@ namespace GrowTopia.Map
             }
         }
 
-        public void SetGrids(IEnumerable<KeyValuePair<Vector2Int, IReadOnlyMapGrid>> changes)
+        public void SetGrids(IEnumerable<KeyValuePair<Vector2Int, MapGridInfo?>> changes)
         {
             var context = new MapChangedContext();
 
@@ -193,10 +196,9 @@ namespace GrowTopia.Map
                 _onMapChanged?.Invoke(context);
         }
 
-        public IEnumerator<KeyValuePair<Vector2Int, IReadOnlyMapGrid>> GetEnumerator()
+        public IEnumerator<KeyValuePair<Vector2Int, MapGridInfo>> GetEnumerator()
         {
-            foreach (var pair in _grids)
-                yield return new KeyValuePair<Vector2Int, IReadOnlyMapGrid>(pair.Key, pair.Value);
+            return _grids.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

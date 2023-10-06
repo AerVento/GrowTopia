@@ -10,7 +10,7 @@ namespace GrowTopia.Map
 
         public int Count => Entries.Count;
 
-        public void AddEntry(Vector2Int pos, IReadOnlyMapGrid oldGrid, IReadOnlyMapGrid newGrid)
+        public void AddEntry(Vector2Int pos, MapGridInfo? oldGrid, MapGridInfo? newGrid)
         {
             Entries.Add(new Entry()
             {
@@ -33,8 +33,8 @@ namespace GrowTopia.Map
         public class Entry
         {
             public Vector2Int Position;
-            public IReadOnlyMapGrid OldGrid;
-            public IReadOnlyMapGrid NewGrid;
+            public MapGridInfo? OldGrid;
+            public MapGridInfo? NewGrid;
         }
     }
 }

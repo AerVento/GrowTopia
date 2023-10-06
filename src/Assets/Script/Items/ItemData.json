@@ -2,7 +2,7 @@
   "AvailableItemList": [
     { "Id": "dev", "Name": "Dev_Name", "Description": "Test Item", "MaxStack": "1" },
     {
-      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "$type": "GrowTopia.Items.StaticBlock, Assembly-CSharp",
       "Property": 0,
       "Attribute": 0,
       "Id": "dirt",
@@ -12,7 +12,7 @@
       "Hardness": 1000
     },
     {
-      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "$type": "GrowTopia.Items.StaticBlock, Assembly-CSharp",
       "Property": 0,
       "Attribute": 0,
       "Id": "lava",
@@ -22,7 +22,7 @@
       "Hardness": 3000
     },
     {
-      "$type": "GrowTopia.Items.Block, Assembly-CSharp",
+      "$type": "GrowTopia.Items.StaticBlock, Assembly-CSharp",
       "Property": 0,
       "Attribute": 0,
       "Id": "stone",
@@ -30,6 +30,16 @@
       "Description": "This is stone.",
       "MaxStack": 64,
       "Hardness": 5000
+    },
+    {
+      "$type": "GrowTopia.Items.Container, Assembly-CSharp",
+      "Id": "container",
+      "Name": "Container",
+      "Description": "This is a container.",
+      "MaxStack": 64,
+      "_initProperty": 0,
+      "_initAttribute": 0,
+      "_initHardness": 1000
     }
   ]
 }

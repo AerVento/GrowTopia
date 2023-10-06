@@ -26,3 +26,7 @@ MonoBehaviour:
       Value:
         ItemId: stone
         Tile: {fileID: 11400000, guid: 0801d9c4677945f4f87f98c87de5a327, type: 2}
+    - Key: container
+      Value:
+        ItemId: container
+        Tile: {fileID: 11400000, guid: e0d3a1edc46851340876bb916968075e, type: 2}

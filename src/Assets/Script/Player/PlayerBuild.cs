@@ -77,12 +77,12 @@ namespace GrowTopia.Player
             IReadOnlyInventoryGrid grid = LocalPlayer.Current.Selected;
             if(grid.IsEmpty())
                 return;
-            if (!(grid.Item is Block block))
+            if (!(grid.Item is IReadOnlyBlock block))
                 return;
 
             if (manager.CurrentMap.IsInMap(_gridPosInput) && manager.CurrentMap.IsEmpty(_gridPosInput))
             {
-                manager.CreateBlock(_gridPosInput, block);
+                manager.CreateBlock(_gridPosInput, block.Id);
             }
         }
 
@@ -96,7 +96,7 @@ namespace GrowTopia.Player
             UniTask.Create(async () =>
             {
                 Vector2Int position = _gridPosInput;
-                IReadOnlyBlock block = grid.Block;
+                IReadOnlyBlock block = grid.MapBlock.Block;
                 float breakTime = block.Hardness / 1000f;
                 _isHolding = true;
                 

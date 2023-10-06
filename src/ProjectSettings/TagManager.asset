@@ -53,3 +53,6 @@ TagManager:
   - name: Foreground
     uniqueID: 1388658999
     locked: 0
+  - name: Animation
+    uniqueID: 1211773555
+    locked: 0
