@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using GrowTopia.Events;
 using GrowTopia.Input;
 using GrowTopia.Items;
 using GrowTopia.Map;
+using GrowTopia.Player.Context;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,14 +14,12 @@ namespace GrowTopia.Player
     /// <summary>
     /// Behaviour class used to present the build behaviour of player. Such as placing blocks and destroying blocks.
     /// </summary>
+    [RequireComponent(typeof(IPlayer))]
     public class PlayerBuild : MonoBehaviour
     {
-        /// <summary>
-        /// If the player want to break the block, it needs time to hold the input key and wait it to be broken.
-        /// </summary>
-        private float _holdTime = 0;
         private bool _isHolding;
 
+        private IPlayer _player;
 
         private Vector2Int _gridPosInput;
 
@@ -41,6 +41,8 @@ namespace GrowTopia.Player
         // Start is called before the first frame update
         void Start()
         {
+            _player = GetComponent<IPlayer>();
+            
             _placeBtn = InputManager.Instance.GetAction("PlayerControl/Build/Place");
             _placeBtn.started += PlaceBtnPressedDown;
             _placeBtn.Enable();
@@ -83,6 +85,9 @@ namespace GrowTopia.Player
             if (manager.CurrentMap.IsInMap(_gridPosInput) && manager.CurrentMap.IsEmpty(_gridPosInput))
             {
                 manager.CreateBlock(_gridPosInput, block.Id);
+
+                
+                EventCenter.OnPlayerPlaceBlock.Trigger(new PlayerPlaceBlockContext(_player, _gridPosInput));
             }
         }
 
@@ -98,9 +103,15 @@ namespace GrowTopia.Player
                 Vector2Int position = _gridPosInput;
                 IReadOnlyBlock block = grid.MapBlock.Block;
                 float breakTime = block.Hardness / 1000f;
+                float holdTime = 0;
+
                 _isHolding = true;
                 
-                while (_holdTime < breakTime)
+                PlayerDestroyBlockContext context = new PlayerDestroyBlockContext(_player, position, breakTime);
+
+                EventCenter.OnPlayerStartDestroyBlock.Trigger(context);
+
+                while (holdTime < breakTime)
                 {
                     if (!_breakBtn.IsPressed()) // the player released button
                         break;
@@ -108,15 +119,17 @@ namespace GrowTopia.Player
                         break;
 
                     // otherwise, adding holding time each frame
-                    _holdTime += Time.deltaTime;
+                    holdTime += Time.deltaTime;
                     await UniTask.NextFrame();
-                    Debug.Log(_holdTime + "/" + breakTime);
+                    EventCenter.OnPlayerContinueDestroyingBlock.Trigger((context, holdTime / breakTime));
                 }
 
-                if (_holdTime >= breakTime)
-                    MapManager.Instance.DestroyBlock(position);
+                bool success = holdTime >= breakTime;
 
-                _holdTime = 0;
+                if (success)
+                    MapManager.Instance.DestroyBlock(position);
+                
+                EventCenter.OnPlayerEndDestroyBlock.Trigger((context, success));
                 _isHolding = false;
             });
         }

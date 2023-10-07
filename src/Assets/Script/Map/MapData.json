@@ -1,37 +1,5 @@
 ﻿{
   "_grids": {
-    "item((9, 4)))": {
-      "key": {
-        "x": 9,
-        "y": 4
-      },
-      "value": {
-        "Position": {
-          "x": 9,
-          "y": 4
-        },
-        "MapBlock": {
-          "id": "container",
-          "content": "I'm a container that contains 99 diamonds!"
-        }
-      }
-    },
-    "item((1, 0)))": {
-      "key": {
-        "x": 1,
-        "y": 0
-      },
-      "value": {
-        "Position": {
-          "x": 1,
-          "y": 0
-        },
-        "MapBlock": {
-          "id": "lava",
-          "content": ""
-        }
-      }
-    },
     "item((9, 3)))": {
       "key": {
         "x": 9,
@@ -160,22 +128,6 @@
         }
       }
     },
-    "item((4, 4)))": {
-      "key": {
-        "x": 4,
-        "y": 4
-      },
-      "value": {
-        "Position": {
-          "x": 4,
-          "y": 4
-        },
-        "MapBlock": {
-          "id": "stone",
-          "content": ""
-        }
-      }
-    },
     "item((8, 3)))": {
       "key": {
         "x": 8,
@@ -192,63 +144,79 @@
         }
       }
     },
-    "item((2, 0)))": {
+    "item((2, 6)))": {
       "key": {
         "x": 2,
-        "y": 0
+        "y": 6
       },
       "value": {
         "Position": {
           "x": 2,
-          "y": 0
+          "y": 6
         },
         "MapBlock": {
-          "id": "container",
-          "content": "I'm a container that contains 99 diamonds!"
+          "id": "lava",
+          "content": ""
         }
       }
     },
-    "item((1, 1)))": {
+    "item((1, 5)))": {
       "key": {
         "x": 1,
-        "y": 1
+        "y": 5
       },
       "value": {
         "Position": {
           "x": 1,
-          "y": 1
+          "y": 5
         },
         "MapBlock": {
-          "id": "container",
-          "content": "I'm a container that contains 99 diamonds!"
+          "id": "lava",
+          "content": ""
         }
       }
     },
-    "item((2, 1)))": {
+    "item((2, 4)))": {
       "key": {
         "x": 2,
-        "y": 1
+        "y": 4
       },
       "value": {
         "Position": {
           "x": 2,
-          "y": 1
+          "y": 4
         },
         "MapBlock": {
-          "id": "container",
-          "content": "I'm a container that contains 99 diamonds!"
+          "id": "lava",
+          "content": ""
         }
       }
     },
-    "item((0, 1)))": {
+    "item((2, 3)))": {
       "key": {
-        "x": 0,
-        "y": 1
+        "x": 2,
+        "y": 3
       },
       "value": {
         "Position": {
-          "x": 0,
-          "y": 1
+          "x": 2,
+          "y": 3
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((4, 7)))": {
+      "key": {
+        "x": 4,
+        "y": 7
+      },
+      "value": {
+        "Position": {
+          "x": 4,
+          "y": 7
         },
         "MapBlock": {
           "id": "container",
@@ -256,19 +224,195 @@
         }
       }
     },
-    "item((0, 0)))": {
+    "item((7, 9)))": {
       "key": {
-        "x": 0,
+        "x": 7,
+        "y": 9
+      },
+      "value": {
+        "Position": {
+          "x": 7,
+          "y": 9
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((8, 9)))": {
+      "key": {
+        "x": 8,
+        "y": 9
+      },
+      "value": {
+        "Position": {
+          "x": 8,
+          "y": 9
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((8, 8)))": {
+      "key": {
+        "x": 8,
+        "y": 8
+      },
+      "value": {
+        "Position": {
+          "x": 8,
+          "y": 8
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((9, 9)))": {
+      "key": {
+        "x": 9,
+        "y": 9
+      },
+      "value": {
+        "Position": {
+          "x": 9,
+          "y": 9
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((9, 8)))": {
+      "key": {
+        "x": 9,
+        "y": 8
+      },
+      "value": {
+        "Position": {
+          "x": 9,
+          "y": 8
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((11, 9)))": {
+      "key": {
+        "x": 11,
+        "y": 9
+      },
+      "value": {
+        "Position": {
+          "x": 11,
+          "y": 9
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((10, 9)))": {
+      "key": {
+        "x": 10,
+        "y": 9
+      },
+      "value": {
+        "Position": {
+          "x": 10,
+          "y": 9
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((1, 4)))": {
+      "key": {
+        "x": 1,
+        "y": 4
+      },
+      "value": {
+        "Position": {
+          "x": 1,
+          "y": 4
+        },
+        "MapBlock": {
+          "id": "lava",
+          "content": ""
+        }
+      }
+    },
+    "item((10, 10)))": {
+      "key": {
+        "x": 10,
+        "y": 10
+      },
+      "value": {
+        "Position": {
+          "x": 10,
+          "y": 10
+        },
+        "MapBlock": {
+          "id": "container",
+          "content": "I'm a container that contains 99 diamonds!"
+        }
+      }
+    },
+    "item((9, 11)))": {
+      "key": {
+        "x": 9,
+        "y": 11
+      },
+      "value": {
+        "Position": {
+          "x": 9,
+          "y": 11
+        },
+        "MapBlock": {
+          "id": "container",
+          "content": "I'm a container that contains 99 diamonds!"
+        }
+      }
+    },
+    "item((5, 0)))": {
+      "key": {
+        "x": 5,
         "y": 0
       },
       "value": {
         "Position": {
-          "x": 0,
+          "x": 5,
           "y": 0
         },
         "MapBlock": {
           "id": "container",
           "content": "I'm a container that contains 99 diamonds!"
+        }
+      }
+    },
+    "item((5, 7)))": {
+      "key": {
+        "x": 5,
+        "y": 7
+      },
+      "value": {
+        "Position": {
+          "x": 5,
+          "y": 7
+        },
+        "MapBlock": {
+          "id": "stone",
+          "content": ""
         }
       }
     }

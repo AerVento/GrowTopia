@@ -50,6 +50,7 @@ namespace GrowTopia.Player
 
         #region Interface Implementation
         GameObject IPlayer.Target => gameObject;
+        bool IPlayer.IsLocal => true;
         #endregion
 
         void Awake()

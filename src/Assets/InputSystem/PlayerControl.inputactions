@@ -117,17 +117,6 @@
                 },
                 {
                     "name": "",
-                    "id": "be352eac-f2a8-4743-ba14-94e3a82584bc",
-                    "path": "<Pointer>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mobile",
-                    "action": "Place",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "cdfdbd2d-efa7-49d4-8a8b-24a29a91b080",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -139,22 +128,11 @@
                 },
                 {
                     "name": "",
-                    "id": "4a335117-ea9d-4554-8b1d-5ebba26b5a94",
-                    "path": "<Pointer>/press",
-                    "interactions": "Hold(duration=0.4,pressPoint=0.5)",
-                    "processors": "",
-                    "groups": "Mobile",
-                    "action": "Break",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "c2aadbbc-e189-45d9-9849-a521e9bc17d9",
                     "path": "<Pointer>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Mobile",
+                    "groups": "Keyboard&Mouse",
                     "action": "Position",
                     "isComposite": false,
                     "isPartOfComposite": false

@@ -12,6 +12,8 @@ namespace GrowTopia.Input
         [SerializeField]
         private List<InputActionAsset> _assetList;
 
+        [SerializeField]
+
         /// <summary>
         /// Get input action from a path. The path style is InputActionAssetName/InputActionMapName/InputActionName .
         /// </summary>

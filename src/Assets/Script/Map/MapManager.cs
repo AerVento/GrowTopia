@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Framework.Singleton;
+using GrowTopia.Events;
 using GrowTopia.Items;
+using GrowTopia.Map.Context;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -31,13 +35,12 @@ namespace GrowTopia.Map
             // get each tilemap layer
             _tilemapSet.LoadLayer(_grid);
 
-
-            // load map data from extern
-            _currentMapHandler.Load();
-
-            // apply these map data to the tilemap
+            // load map data from extern and apply these map data to the tilemap
             Load();
             DrawMapBoarder();
+
+            // start the graphic
+            MapGraphics.StartGraphic();
         }
 
         // get the right layer for the block
@@ -120,7 +123,7 @@ namespace GrowTopia.Map
             {
                 TilemapLayer layer = GetLayerOfBlock(grid.MapBlock.Block);
                 _tilemapSet.GetMapLayer(layer).SetTile(
-                    new Vector3Int(position.x, position.y), tile:null
+                    new Vector3Int(position.x, position.y), tile: null
                 );
 
                 _currentMapHandler.Target.SetGrid(position, null);
@@ -139,17 +142,47 @@ namespace GrowTopia.Map
         }
 
         /// <summary>
+        /// Transform a grid position to world position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Vector3 GridToWorld(Vector2Int position)
+        {
+            Vector3 pos = _grid.CellToWorld(new Vector3Int(position.x, position.y));
+            return pos;
+        }
+
+        /// <summary>
         /// Load the map data and set tile for each entry.
         /// </summary>
         public void Load()
         {
+            _currentMapHandler.Load();
+            _currentMapHandler.Target.OnMapChanged += OnMapChangedNoticeExtern;
+
             foreach (var (position, grid) in _currentMapHandler.Target)
             {
                 IMapBlock block = grid.MapBlock;
                 _tilemapSet.GetMapLayer(
-                    layer:GetLayerOfBlock(grid.MapBlock.Block)
+                    layer: GetLayerOfBlock(grid.MapBlock.Block)
                     ).SetTile(new Vector3Int(position.x, position.y), block.Tile);
             }
+        }
+
+        /// <summary>
+        /// When the map changed, distribute the change message to: creating/changing/destroying and notice event center.
+        /// </summary>
+        /// <param name="context"></param>
+        private void OnMapChangedNoticeExtern(MapChangedContext context)
+        {
+            IEnumerable<MapChangedContext.Entry> changes = context.Entries;
+            MapChangedContext created = new MapChangedContext(from change in changes where change.IsCreating select change);
+            MapChangedContext changed = new MapChangedContext(from change in changes where change.IsChanging select change);
+            MapChangedContext destroyed = new MapChangedContext(from change in changes where change.IsDestroying select change);
+
+            EventCenter.OnBlockCreated.Trigger(created);
+            EventCenter.OnBlockChanged.Trigger(changed);
+            EventCenter.OnBlockDestroyed.Trigger(destroyed);
         }
 
         private void DrawMapBoarder()
